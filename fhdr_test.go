@@ -235,22 +235,23 @@ func TestFHDR(t *testing.T) {
 					So(h.FCtrl, ShouldResemble, FCtrl{ADR: true, ADRACKReq: false, ACK: true, FPending: true, ClassB: true, fOptsLen: 5})
 				})
 
-				Convey("Then len(FOpts)=1", func() {
-					So(h.FOpts, ShouldHaveLength, 1)
+				Convey("Then len(FOpts)=3", func() {
+					So(h.FOpts, ShouldHaveLength, 3)
 					Convey("Then CID=LinkCheckAns", func() {
 						So(h.FOpts[0].CID, ShouldEqual, LinkCheckAns)
 					})
 
 				})
 
+				Convey("Then the remaining mac data is still available", func() {
+					So(h.FOpts[1].CID, ShouldEqual, 78)
+					So(h.FOpts[2].CID, ShouldEqual, 79)
+				})
+
 				Convey("Then Payload=LinkCheckAnsPayload(Margin=7, GwCnt=9)", func() {
 					p, ok := h.FOpts[0].Payload.(*LinkCheckAnsPayload)
 					So(ok, ShouldBeTrue)
 					So(p, ShouldResemble, &LinkCheckAnsPayload{Margin: 7, GwCnt: 9})
-				})
-
-				Convey("Then a warning was printed", func() {
-					So(logBytes.String(), ShouldEndWith, "warning: unmarshal mac-command error (skipping remaining mac-command bytes): lorawan: invalid CID 4e\n")
 				})
 			})
 		})

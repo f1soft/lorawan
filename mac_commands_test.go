@@ -63,19 +63,6 @@ func TestMACCommand(t *testing.T) {
 	Convey("Given an empty MACCommand", t, func() {
 		var m MACCommand
 
-		Convey("Then the CID must be between 2 - 8 or 128 - 255", func() {
-			for i := 0; i <= 255; i++ {
-				m.CID = CID(i)
-
-				_, err := m.MarshalBinary()
-				if (i >= 2 && i <= 8) || (i >= 128 && i <= 255) {
-					So(err, ShouldBeNil)
-				} else {
-					So(err, ShouldNotBeNil)
-				}
-			}
-		})
-
 		Convey("Given CID=LinkCheckAns, Payload=LinkCheckAnsPayload(Margin=10, GwCnt=15)", func() {
 			m.CID = LinkCheckAns
 			m.Payload = &LinkCheckAnsPayload{Margin: 10, GwCnt: 15}

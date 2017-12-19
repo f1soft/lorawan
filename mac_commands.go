@@ -114,7 +114,7 @@ func GetMACPayloadAndSize(uplink bool, c CID) (MACCommandPayload, int, error) {
 // that there is no need to call this when the size of the payload is > 0 bytes.
 func RegisterProprietaryMACCommand(uplink bool, cid CID, payloadSize int) error {
 	if !(cid >= 128 && cid <= 255) {
-		return fmt.Errorf("lorawan: invalid CID %x", cid)
+		return fmt.Errorf("lorawan: invalid CID %x", byte(cid))
 	}
 
 	if payloadSize == 0 {
@@ -148,11 +148,8 @@ type MACCommand struct {
 
 // MarshalBinary marshals the object in binary form.
 func (m MACCommand) MarshalBinary() ([]byte, error) {
-	if !(m.CID >= 2 && m.CID <= 8) && !(m.CID >= 128) {
-		return nil, fmt.Errorf("lorawan: invalid CID %x", m.CID)
-	}
-
 	b := []byte{byte(m.CID)}
+
 	if m.Payload != nil {
 		p, err := m.Payload.MarshalBinary()
 		if err != nil {
@@ -170,9 +167,6 @@ func (m *MACCommand) UnmarshalBinary(uplink bool, data []byte) error {
 	}
 
 	m.CID = CID(data[0])
-	if !(m.CID >= 2 && m.CID <= 8) && !(m.CID >= 128) {
-		return fmt.Errorf("lorawan: invalid CID %x", int(m.CID))
-	}
 
 	if len(data) > 1 {
 		p, _, err := GetMACPayloadAndSize(uplink, m.CID)
@@ -785,6 +779,7 @@ func (p PingSlotInfoReqPayload) MarshalBinary() ([]byte, error) {
 
 // UnmarshalBinary decodes the object from bytes.
 func (p *PingSlotInfoReqPayload) UnmarshalBinary(data []byte) error {
+	fmt.Println(data)
 	if len(data) != 1 {
 		return errors.New("lorawan: 1 byte of data is expected")
 	}
