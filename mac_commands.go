@@ -48,8 +48,9 @@ const (
 	PingSlotInfoAns    CID = 0x10
 	PingSlotChannelReq CID = 0x11
 	PingSlotChannelAns CID = 0x11
-	BeaconFreqReq      CID = 0x13
-	BeaconFreqAns      CID = 0x13
+	// 0x12 has been deprecated in 1.1
+	BeaconFreqReq CID = 0x13
+	BeaconFreqAns CID = 0x13
 	// 0x80 to 0xFF reserved for proprietary network command extensions
 )
 
