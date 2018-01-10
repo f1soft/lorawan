@@ -780,7 +780,6 @@ func (p PingSlotInfoReqPayload) MarshalBinary() ([]byte, error) {
 
 // UnmarshalBinary decodes the object from bytes.
 func (p *PingSlotInfoReqPayload) UnmarshalBinary(data []byte) error {
-	fmt.Println(data)
 	if len(data) != 1 {
 		return errors.New("lorawan: 1 byte of data is expected")
 	}
@@ -872,12 +871,12 @@ func (p PingSlotChannelReqPayload) MarshalBinary() ([]byte, error) {
 	}
 
 	// allocate one extra byte for PutUint32
-	b := make([]byte, 5)
+	b := make([]byte, 4)
 
-	b[0] = byte(p.DR)
-	binary.LittleEndian.PutUint32(b[1:5], p.Frequency/100)
+	binary.LittleEndian.PutUint32(b, p.Frequency/100)
+	b[3] = byte(p.DR)
 
-	return b[0:4], nil
+	return b, nil
 }
 
 // UnmarshalBinary decodes the object from bytes.
@@ -886,12 +885,12 @@ func (p *PingSlotChannelReqPayload) UnmarshalBinary(data []byte) error {
 		return errors.New("lorawan: 4 bytes of data are expected")
 	}
 
-	// allocate one extra byte for Uint32
-	b := make([]byte, 5)
+	b := make([]byte, 4)
 	copy(b, data)
+	b[3] = 0
 
-	p.DR = data[0] & ((1 << 3) | (1 << 2) | (1 << 1) | (1 << 0))
-	p.Frequency = binary.LittleEndian.Uint32(b[1:5]) * 100
+	p.Frequency = binary.LittleEndian.Uint32(b) * 100
+	p.DR = data[3] & ((1 << 3) | (1 << 2) | (1 << 1) | (1 << 0))
 
 	return nil
 }

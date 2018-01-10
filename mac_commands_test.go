@@ -923,7 +923,7 @@ func TestMACPayloads(t *testing.T) {
 			},
 			{
 				Payload:       &PingSlotChannelReqPayload{Frequency: 868100000, DR: 5},
-				ExpectedBytes: []byte{5, 40, 118, 132},
+				ExpectedBytes: []byte{40, 118, 132, 5},
 			},
 		}
 
